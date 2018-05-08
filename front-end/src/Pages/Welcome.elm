@@ -40,36 +40,10 @@ update msg model =
 
 viewWelcomeScreen : Model -> Html msg
 viewWelcomeScreen { context, response } =
-    let
-        swaggerEndpoint =
-            context.apiBaseUrl ++ "/swagger-ui"
-    in
     div []
-        [ hero { heroModifiers | size = Small, color = Bulma.Modifiers.Light }
+        [ section NotSpaced
             []
-            [ heroBody []
-                [ fluidContainer [ style [ ( "display", "flex" ), ( "justify-content", "center" ) ] ]
-                    [ Elements.easyImage Elements.Natural [ style [ ( "width", "300px" ) ] ] "/haskstarLogo.png"
-                    ]
-                ]
-            ]
-        , section NotSpaced
-            []
-            [ Elements.title Elements.H2 [] [ text "Server Connection" ]
-            , div []
-                [ case response of
-                    Success r ->
-                        text <| "Server Response " ++ context.apiBaseUrl ++ "  " ++ r
-
-                    NotAsked ->
-                        div [] [ text "Have not yet contacted server" ]
-
-                    Loading ->
-                        div [] [ text "Loading..." ]
-
-                    Failure e ->
-                        div [] [ text <| "Error loading from server" ++ toString e ]
-                ]
-            , a [ href swaggerEndpoint, target "_blank" ] [ text <| "Click here to see all API endpoints " ++ swaggerEndpoint ]
+            [ Elements.title Elements.H2 [] [ text "Steven MacCoun" ]
+            , a [ href "/blogPost" ] [ text <| "Blog " ]
             ]
         ]

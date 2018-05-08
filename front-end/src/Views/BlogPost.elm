@@ -1,7 +1,7 @@
 module Views.BlogPost exposing (..)
 
 import Html exposing (Html, div, input, label, text)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (class, style)
 import Markdown exposing (toHtml)
 import Types.BlogPost exposing (BlogPost, blogPostDecoder, blogPostEncoder)
 
@@ -18,4 +18,4 @@ viewBlogPost { title, content } =
         fullPost =
             List.concat [ renderTitle, renderContent ]
     in
-    div [ class "content" ] fullPost
+    div [ class "content", style [ ( "width", "40vw" ) ] ] fullPost

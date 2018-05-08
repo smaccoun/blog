@@ -148,7 +148,6 @@ view : Model -> Html Msg
 view model =
     main_ []
         [ stylesheet
-        , viewNavbar True True model.currentPage NewUrl
         , Html.map PageMsgW <| Pages.Index.view model.currentPage
         ]
 
