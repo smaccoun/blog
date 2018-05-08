@@ -1,0 +1,79 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: smaccoun-ing
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: smaccoun-ip
+  labels:
+    app: blog
+spec:
+  backend:
+    serviceName: blog-backend-service
+    servicePort: 8080
+---
+kind: "Service"
+apiVersion: "v1"
+metadata:
+  name: blog-backend-service
+  labels:
+    app: blog
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: blog
+    tier: backend
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: blog-backend-deployment
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  strategy:
+    type: "RollingUpdate"  
+  selector:
+    matchLabels:
+      app: "blog"
+      tier: backend
+      track: stable
+  template:
+    metadata:
+      labels:
+        app: "blog"
+        tier: backend
+        track: stable
+    spec:
+      containers:
+        - name: "blog-backend"
+          image: "smaccoun/blog-backend:547f9449f6e8659d43910edf695ded83669ae108"
+          envFrom:
+            - configMapRef:
+                name: "blog-envvars" 
+          terminationMessagePath: "/tmp/my-log"   
+          resources:
+            requests:
+              memory: 10Mi
+              cpu: 50m
+            limits:
+              memory: 100Mi
+              cpu: 200m
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: external
+            initialDelaySeconds: 5
+            periodSeconds: 200
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: external
+            initialDelaySeconds: 5
+            periodSeconds: 200
+          ports:
+            - containerPort: 8080
+              name: "external"
+              protocol: "TCP"

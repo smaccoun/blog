@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  selector:
+    app: blog
+    tier: frontend
+  ports:
+  - protocol: "TCP"
+    port: 5000
+    targetPort: 5000
+  type: LoadBalancer
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: blog-frontend
+spec:
+  selector:
+    matchLabels:
+      app: blog
+      tier: frontend
+      track: stable
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blog
+        tier: frontend
+        track: stable
+    spec:
+      containers:
+      - name: blog-frontend
+        image: "smaccoun/blog-frontend:547f9449f6e8659d43910edf695ded83669ae108"
+        ports:
+            - containerPort: 5000
+              name: "external"
+              protocol: "TCP"
+        
